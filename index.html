@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cloud Attendance System</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;font-family:Inter,Segoe UI,Arial,sans-serif;background:#f4f7fb;color:#172033}
+.container{max-width:1180px;margin:auto;padding:28px}
+.header{display:flex;justify-content:space-between;align-items:center;margin-bottom:24px}
+.brand{display:flex;align-items:center;gap:14px}
+.logo{width:48px;height:48px;border-radius:14px;background:#2563eb;color:white;display:grid;place-items:center;font-size:24px;font-weight:800}
+h1{margin:0;font-size:25px}.sub{margin:5px 0 0;color:#667085;font-size:14px}
+.badge{background:#e8f7ee;color:#16803c;border:1px solid #bce8ca;padding:9px 13px;border-radius:999px;font-size:13px;font-weight:700}
+.grid{display:grid;grid-template-columns:1.45fr .8fr;gap:20px}
+.card{background:white;border:1px solid #e5eaf2;border-radius:18px;box-shadow:0 8px 25px rgba(20,40,80,.06);padding:24px}
+.card h2{margin:0 0 5px;font-size:19px}.muted{color:#667085;font-size:13px;margin-bottom:22px}
+.formgrid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.field.full{grid-column:1/-1}
+label{display:block;font-size:13px;font-weight:700;margin-bottom:8px}
+input{width:100%;padding:13px 14px;border:1px solid #d8dfeb;border-radius:10px;font-size:15px;outline:none}
+input:focus{border-color:#2563eb;box-shadow:0 0 0 3px #2563eb18}
+.status{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.status button{padding:14px;border:1px solid #d8dfeb;background:#fff;border-radius:10px;font-weight:700;cursor:pointer}
+.status button.active.present{border-color:#16a34a;background:#ecfdf3;color:#15803d}
+.status button.active.absent{border-color:#2563eb;background:#eff6ff;color:#1d4ed8}
+.submit{width:100%;margin-top:20px;padding:15px;border:0;border-radius:11px;background:#2563eb;color:#fff;font-size:15px;font-weight:800;cursor:pointer}
+.submit:hover{background:#1d4ed8}.submit:disabled{opacity:.6;cursor:wait}
+.result{display:none;margin-top:16px;padding:14px;border-radius:11px;font-size:14px;line-height:1.55}
+.result.success{display:block;background:#ecfdf3;color:#166534;border:1px solid #bbf7d0}
+.result.error{display:block;background:#fef2f2;color:#991b1b;border:1px solid #fecaca}
+.stats{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:20px}
+.stat{padding:16px;border-radius:13px;background:#f7f9fc;border:1px solid #e8edf5}
+.stat strong{display:block;font-size:22px}.stat span{font-size:12px;color:#667085}
+.flow{margin-top:20px}
+.flow h3{font-size:15px;margin:0 0 12px}
+.step{display:flex;align-items:center;gap:9px;margin:9px 0;font-size:13px}
+.icon{width:32px;height:32px;border-radius:9px;background:#eef4ff;display:grid;place-items:center;font-weight:800;color:#2563eb}
+.arrow{color:#98a2b3;margin-left:5px}
+.note{margin-top:20px;padding:14px;background:#fff8e7;border:1px solid #f4df9c;border-radius:12px;font-size:12px;color:#795b00;line-height:1.5}
+.footer{text-align:center;color:#98a2b3;font-size:12px;margin-top:22px}
+@media(max-width:850px){.grid{grid-template-columns:1fr}.formgrid{grid-template-columns:1fr}.field.full{grid-column:auto}.header{align-items:flex-start;gap:12px}.badge{display:none}}
+</style>
+</head>
+<body>
+<div class="container">
+  <header class="header">
+    <div class="brand">
+      <div class="logo">✓</div>
+      <div>
+        <h1>Cloud Attendance System</h1>
+        <p class="sub">Cloud-based student attendance & automatic email alerts</p>
+      </div>
+    </div>
+    <div class="badge">● Cloud Connected</div>
+  </header>
+
+  <main class="grid">
+    <section class="card">
+      <h2>Mark Attendance</h2>
+      <div class="muted">Record a student's attendance through the cloud backend.</div>
+
+      <div class="formgrid">
+        <div class="field">
+          <label>Student ID</label>
+          <input id="student_id" value="STU001">
+        </div>
+        <div class="field">
+          <label>Student Name</label>
+          <input id="student_name" value="Sadikur">
+        </div>
+        <div class="field full">
+          <label>Course</label>
+          <input id="course_id" value="cloud-computing">
+        </div>
+        <div class="field full">
+          <label>Attendance Date</label>
+          <input id="attendance_date" type="date">
+        </div>
+        <div class="field full">
+          <label>Attendance Status</label>
+          <div class="status">
+            <button id="presentBtn" class="present active" onclick="setStatus('present')">✓ Present</button>
+            <button id="absentBtn" class="absent" onclick="setStatus('absent')">✕ Absent</button>
+          </div>
+        </div>
+      </div>
+
+      <button id="submitBtn" class="submit" onclick="markAttendance()">MARK ATTENDANCE</button>
+      <div id="result" class="result"></div>
+    </section>
+
+    <aside class="card">
+      <h2>System Overview</h2>
+      <div class="muted">Live architecture used by this demo.</div>
+
+      <div class="stats">
+        <div class="stat"><strong id="totalCount">0</strong><span>Records this session</span></div>
+        <div class="stat"><strong id="lastStatus">—</strong><span>Last status</span></div>
+      </div>
+
+      <div class="flow">
+        <h3>Cloud Data Flow</h3>
+        <div class="step"><div class="icon">1</div><b>Dashboard</b><span class="arrow">→</span> Web UI</div>
+        <div class="step"><div class="icon">2</div><b>API Gateway</b><span class="arrow">→</span> API request</div>
+        <div class="step"><div class="icon">3</div><b>Lambda</b><span class="arrow">→</span> Backend logic</div>
+        <div class="step"><div class="icon">4</div><b>DynamoDB</b><span class="arrow">→</span> Attendance data</div>
+        <div class="step"><div class="icon">5</div><b>SES</b><span class="arrow">→</span> Email alert</div>
+      </div>
+
+      <div class="note">
+        <b>Automatic alert:</b> When attendance is marked <b>Absent</b>, the backend sends an attendance notification by Amazon SES.
+      </div>
+    </aside>
+  </main>
+
+  <div class="footer">Cloud Computing Project • AWS-based Attendance Demo</div>
+</div>
+
+<script>
+const API_URL = "https://e6m4n5kip3.execute-api.ap-southeast-2.amazonaws.com/prod/attendance";
+let status = "present";
+let count = 0;
+document.getElementById("attendance_date").value = new Date().toISOString().slice(0,10);
+
+function setStatus(value){
+  status=value;
+  document.getElementById("presentBtn").classList.toggle("active", value==="present");
+  document.getElementById("absentBtn").classList.toggle("active", value==="absent");
+}
+
+async function markAttendance(){
+  const btn=document.getElementById("submitBtn");
+  const result=document.getElementById("result");
+  const student_id=document.getElementById("student_id").value.trim();
+  const attendance_date=document.getElementById("attendance_date").value;
+  const course_id=document.getElementById("course_id").value.trim();
+
+  if(!student_id || !attendance_date || !course_id){
+    result.className="result error";
+    result.textContent="Please complete Student ID, Course and Date.";
+    return;
+  }
+
+  btn.disabled=true;
+  btn.textContent="SENDING TO AWS...";
+  result.className="result";
+  result.textContent="";
+
+  try{
+    const response=await fetch(API_URL,{
+      method:"POST",
+      headers:{"Content-Type":"application/json"},
+      body:JSON.stringify({student_id,attendance_date,course_id,status})
+    });
+    const data=await response.json();
+    if(!response.ok) throw new Error(data.message || "Request failed");
+
+    count++;
+    document.getElementById("totalCount").textContent=count;
+    document.getElementById("lastStatus").textContent=status.toUpperCase();
+
+    result.className="result success";
+    result.innerHTML =
+      "✓ <b>Attendance recorded successfully!</b><br>"+
+      "Student: "+student_id+"<br>"+
+      "Course: "+course_id+"<br>"+
+      "Status: "+status.toUpperCase()+
+      (status==="absent" ? "<br>✓ Email alert sent through AWS SES." : "");
+  }catch(error){
+    result.className="result error";
+    result.innerHTML="✕ <b>Could not record attendance.</b><br>"+error.message;
+  }finally{
+    btn.disabled=false;
+    btn.textContent="MARK ATTENDANCE";
+  }
+}
+</script>
+</body>
+</html>
