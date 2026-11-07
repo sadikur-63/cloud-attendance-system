@@ -1,999 +1,359 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>CloudAttend | Attendance Management</title>
-
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>CloudAttend | Professor Dashboard</title>
 <style>
 :root {
-  --primary: #6d5dfc;
-  --primary-dark: #5746e8;
-  --background: #f6f7fc;
-  --surface: #ffffff;
-  --text: #20243a;
-  --muted: #858ba3;
-  --border: #eceef5;
-  --green: #16a36a;
-  --red: #e45468;
-}
-
-* {
-  box-sizing: border-box;
-}
-
-body {
-  margin: 0;
-  font-family: Inter, "Segoe UI", Arial, sans-serif;
-  background: var(--background);
-  color: var(--text);
-}
-
-.app {
-  min-height: 100vh;
-  display: flex;
-}
-
-/* Sidebar */
-
-.sidebar {
-  width: 245px;
-  background: #211d45;
-  color: white;
-  padding: 28px 20px;
-  flex-shrink: 0;
-}
-
-.brand {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  margin-bottom: 48px;
-}
-
-.brand-icon {
-  width: 42px;
-  height: 42px;
-  border-radius: 13px;
-  display: grid;
-  place-items: center;
-  background: linear-gradient(135deg, #8c7cff, #5d4ce7);
-  font-size: 23px;
-  font-weight: 800;
-}
-
-.brand-name {
-  font-size: 19px;
-  font-weight: 800;
-}
-
-.brand-small {
-  color: #aaa5d0;
-  font-size: 11px;
-  margin-top: 3px;
-}
-
-.nav-label {
-  color: #9994bd;
-  font-size: 11px;
-  font-weight: 700;
-  letter-spacing: 1.2px;
-  margin: 0 0 13px 10px;
-}
-
-.nav-item {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  padding: 13px 14px;
-  margin-bottom: 7px;
-  color: #c6c3dc;
-  border-radius: 10px;
-  font-size: 14px;
-}
-
-.nav-item.active {
-  background: #5145a8;
-  color: white;
-  font-weight: 700;
-}
-
-.sidebar-bottom {
-  margin-top: 55px;
-  padding: 16px;
-  background: #302b59;
-  border-radius: 13px;
-}
-
-.sidebar-bottom strong {
-  display: block;
-  font-size: 13px;
-  margin-bottom: 7px;
-}
-
-.sidebar-bottom span {
-  color: #bcb7dd;
-  font-size: 11px;
-  line-height: 1.5;
-}
-
-/* Main content */
-
-.main {
-  flex: 1;
-  min-width: 0;
-  padding: 30px 38px;
-}
-
-.topbar {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 15px;
-  margin-bottom: 30px;
-}
-
-.page-title {
-  font-size: 25px;
-  font-weight: 800;
-  margin: 0;
-}
-
-.page-subtitle {
-  color: var(--muted);
-  font-size: 13px;
-  margin-top: 7px;
-}
-
-.cloud-status {
-  background: #e9f8f0;
-  color: #148653;
-  border: 1px solid #c9eedb;
-  padding: 10px 14px;
-  border-radius: 30px;
-  font-size: 12px;
-  font-weight: 700;
-  white-space: nowrap;
-}
-
-/* Summary cards */
-
-.stats {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 17px;
-  margin-bottom: 24px;
-}
-
-.stat-card {
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: 15px;
-  padding: 20px;
-  box-shadow: 0 5px 20px rgba(36, 35, 75, 0.035);
-}
-
-.stat-top {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: 17px;
-}
-
-.stat-icon {
-  width: 38px;
-  height: 38px;
-  border-radius: 11px;
-  display: grid;
-  place-items: center;
-  font-size: 18px;
-  background: #f0edff;
-}
-
-.stat-card:nth-child(2) .stat-icon {
-  background: #e8f8f0;
-}
-
-.stat-card:nth-child(3) .stat-icon {
-  background: #fff0f1;
-}
-
-.stat-card:nth-child(4) .stat-icon {
-  background: #fff6e8;
-}
-
-.stat-number {
-  font-size: 28px;
-  font-weight: 800;
-}
-
-.stat-label {
-  font-size: 12px;
-  color: var(--muted);
-  margin-top: 5px;
-}
-
-/* Content grid */
-
-.content-grid {
-  display: grid;
-  grid-template-columns: minmax(0, 1.5fr) minmax(280px, 0.8fr);
-  gap: 20px;
-  align-items: start;
-}
-
-.card {
-  background: white;
-  border: 1px solid var(--border);
-  border-radius: 16px;
-  padding: 24px;
-  box-shadow: 0 5px 20px rgba(36, 35, 75, 0.035);
-}
-
-.card-heading {
-  font-size: 17px;
-  font-weight: 800;
-  margin: 0;
-}
-
-.card-description {
-  color: var(--muted);
-  font-size: 12px;
-  margin: 7px 0 23px;
-}
-
-/* Form */
-
-.form-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 17px;
-}
-
-.field.full {
-  grid-column: 1 / -1;
-}
-
-label {
-  display: block;
-  font-size: 12px;
-  font-weight: 700;
-  margin-bottom: 8px;
-}
-
-input {
-  width: 100%;
-  padding: 13px 14px;
-  border: 1px solid #e1e3ed;
-  border-radius: 10px;
-  outline: none;
-  font-size: 14px;
-  background: #fff;
-  color: var(--text);
-}
-
-input:focus {
-  border-color: var(--primary);
-  box-shadow: 0 0 0 3px rgba(109, 93, 252, 0.1);
-}
-
-.status-options {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 12px;
-}
-
-.status-button {
-  padding: 13px;
-  background: white;
-  border: 1px solid #e1e3ed;
-  border-radius: 10px;
-  cursor: pointer;
-  font-weight: 700;
-  font-size: 13px;
-}
-
-.status-button.present.active {
-  background: #eaf8f0;
-  color: #138452;
-  border-color: #63c795;
-}
-
-.status-button.absent.active {
-  background: #fff0f1;
-  color: #d6475c;
-  border-color: #ef9aa5;
-}
-
-.submit-button {
-  width: 100%;
-  padding: 15px;
-  margin-top: 22px;
-  border: none;
-  border-radius: 10px;
-  background: var(--primary);
-  color: white;
-  font-size: 14px;
-  font-weight: 800;
-  cursor: pointer;
-  transition: 0.2s;
-}
-
-.submit-button:hover {
-  background: var(--primary-dark);
-}
-
-.submit-button:disabled {
-  opacity: 0.6;
-  cursor: wait;
-}
-
-.result {
-  display: none;
-  margin-top: 16px;
-  padding: 14px;
-  border-radius: 10px;
-  font-size: 13px;
-  line-height: 1.6;
-  overflow-wrap: anywhere;
-}
-
-.result.success {
-  display: block;
-  background: #eaf8f0;
-  color: #13774a;
-  border: 1px solid #c6ead6;
-}
-
-.result.error {
-  display: block;
-  background: #fff0f1;
-  color: #b52d43;
-  border: 1px solid #f4cbd1;
-}
-
-/* AWS architecture */
-
-.architecture {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
-
-.architecture-step {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  padding: 12px;
-  background: #f8f8fd;
-  border: 1px solid #eeeefa;
-  border-radius: 11px;
-}
-
-.architecture-icon {
-  width: 37px;
-  height: 37px;
-  border-radius: 10px;
-  display: grid;
-  place-items: center;
-  background: #efedff;
-  font-size: 17px;
-}
-
-.architecture-step strong {
-  display: block;
-  font-size: 12px;
-}
-
-.architecture-step span {
-  display: block;
-  color: var(--muted);
-  font-size: 11px;
-  margin-top: 4px;
-}
-
-.flow-arrow {
-  text-align: center;
-  color: #aaa4d9;
-  font-size: 15px;
-  line-height: 5px;
-}
-
-.aws-note {
-  background: #f2efff;
-  border: 1px solid #e0dbff;
-  padding: 14px;
-  border-radius: 11px;
-  margin-top: 18px;
-  font-size: 12px;
-  color: #5545b1;
-  line-height: 1.6;
-}
-
-/* Activity */
-
-.activity-card {
-  margin-top: 21px;
-}
-
-.activity-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 10px;
-  margin-bottom: 17px;
-}
-
-.activity-header span {
-  color: var(--muted);
-  font-size: 11px;
-}
-
-.activity-table {
-  width: 100%;
-  border-collapse: collapse;
-  font-size: 12px;
-}
-
-.activity-table th {
-  color: var(--muted);
-  text-align: left;
-  padding: 12px 9px;
-  border-bottom: 1px solid var(--border);
-  font-weight: 700;
-}
-
-.activity-table td {
-  padding: 13px 9px;
-  border-bottom: 1px solid #f0f1f6;
-}
-
-.status-tag {
-  display: inline-block;
-  padding: 5px 9px;
-  border-radius: 20px;
-  font-size: 10px;
-  font-weight: 800;
-}
-
-.status-tag.present {
-  background: #e8f8ef;
-  color: #168452;
-}
-
-.status-tag.absent {
-  background: #fff0f1;
-  color: #d6475c;
-}
-
-.empty {
-  text-align: center;
-  color: var(--muted);
-  padding: 22px !important;
-}
-
-.footer {
-  text-align: center;
-  color: #a0a4b5;
-  font-size: 11px;
-  margin: 25px 0 5px;
-}
-
-/* Responsive */
-
-@media(max-width: 1050px) {
-  .stats {
-    grid-template-columns: repeat(2, 1fr);
-  }
-
-  .content-grid {
-    grid-template-columns: 1fr;
-  }
-}
-
-@media(max-width: 700px) {
-  .sidebar {
-    display: none;
-  }
-
-  .main {
-    padding: 22px 15px;
-  }
-
-  .topbar {
-    align-items: flex-start;
-    flex-direction: column;
-  }
-
-  .form-grid {
-    grid-template-columns: 1fr;
-  }
-
-  .field.full {
-    grid-column: auto;
-  }
-
-  .stats {
-    gap: 10px;
-  }
-
-  .stat-card {
-    padding: 14px;
-  }
-
-  .stat-number {
-    font-size: 23px;
-  }
-
-  .card {
-    padding: 18px;
-  }
-
-  .activity-table {
-    font-size: 10px;
-  }
-
-  .activity-table th,
-  .activity-table td {
-    padding: 10px 5px;
-  }
+  --purple:#6855e8;
+  --purple-dark:#5140c9;
+  --bg:#f5f6fb;
+  --text:#25243a;
+  --muted:#85899d;
+  --border:#e9eaf2;
+  --green:#16885a;
+  --red:#d94d60;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);
+  font-family:Inter,"Segoe UI",Arial,sans-serif}
+.app{display:flex;min-height:100vh}
+.sidebar{width:245px;background:#211d45;color:white;padding:28px 19px;flex-shrink:0}
+.brand{display:flex;align-items:center;gap:11px;margin-bottom:45px}
+.logo{width:42px;height:42px;border-radius:12px;background:linear-gradient(135deg,#9a8cff,#5945dc);display:grid;place-items:center;font-size:23px;font-weight:800}
+.brand strong{font-size:19px}
+.brand small{display:block;color:#b5b0d2;font-size:10px;margin-top:4px;letter-spacing:1px}
+.nav-title{font-size:10px;color:#a7a1c7;letter-spacing:1.4px;margin:0 0 12px 10px}
+.nav{padding:13px 12px;border-radius:9px;color:#d1cee3;font-size:13px;margin:5px 0}
+.nav.active{background:#5145a8;color:white;font-weight:700}
+.sidebar-note{margin-top:45px;background:#302b59;border-radius:12px;padding:15px;font-size:12px;line-height:1.6;color:#c9c5e0}
+.sidebar-note strong{display:block;color:white;margin-bottom:5px}
+main{flex:1;min-width:0;padding:30px 36px}
+.top{display:flex;justify-content:space-between;align-items:center;gap:15px;margin-bottom:25px}
+h1{font-size:25px;margin:0}
+.subtitle{color:var(--muted);font-size:13px;margin-top:7px}
+.cloud{background:#e8f7ef;color:#168451;border:1px solid #c9ebd8;border-radius:30px;padding:10px 14px;font-size:11px;font-weight:800;white-space:nowrap}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:15px;margin-bottom:20px}
+.stat,.panel{background:white;border:1px solid var(--border);border-radius:14px;box-shadow:0 4px 18px #27234b08}
+.stat{padding:18px}
+.stat-icon{font-size:18px;margin-bottom:12px}
+.stat-number{font-size:27px;font-weight:800}
+.stat-label{font-size:11px;color:var(--muted);margin-top:5px}
+.panel{padding:22px;margin-bottom:19px}
+.panel h2{font-size:17px;margin:0}
+.panel-desc{font-size:12px;color:var(--muted);margin:7px 0 19px}
+.controls{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+label{font-size:12px;font-weight:700;display:block;margin-bottom:7px}
+input,select{width:100%;padding:12px;border:1px solid #dedfeb;border-radius:9px;font-size:13px;background:white;color:var(--text);outline:none}
+input:focus,select:focus{border-color:var(--purple)}
+button{font:inherit;cursor:pointer}
+.btn{border:0;border-radius:9px;padding:12px 16px;font-size:12px;font-weight:750}
+.primary{background:var(--purple);color:white}
+.primary:hover{background:var(--purple-dark)}
+.secondary{background:#f0edff;color:#5545c5}
+.outline{background:white;border:1px solid var(--border);color:var(--text)}
+.danger{background:#fff0f1;color:var(--red)}
+.toolbar{display:flex;flex-wrap:wrap;gap:9px;margin:17px 0}
+.table-wrap{overflow-x:auto}
+table{width:100%;border-collapse:collapse;min-width:650px}
+th{text-align:left;color:var(--muted);font-size:11px;padding:12px 10px;border-bottom:1px solid var(--border)}
+td{padding:12px 10px;border-bottom:1px solid #f0f1f6;font-size:12px}
+.student-name{font-weight:700}
+.student-id{font-size:10px;color:var(--muted);margin-top:4px}
+.status-select{min-width:120px;padding:9px;border-radius:8px;font-size:12px}
+.remove{border:0;background:#fff0f1;color:#c33d50;border-radius:7px;padding:8px 10px;font-size:11px}
+.add-row{display:grid;grid-template-columns:1fr 1fr auto;gap:9px;margin-top:17px}
+.summary-line{display:flex;flex-wrap:wrap;gap:15px;color:var(--muted);font-size:12px;margin-top:15px}
+.message{display:none;padding:14px;border-radius:9px;font-size:12px;line-height:1.6;margin-top:15px;overflow-wrap:anywhere}
+.message.show{display:block}
+.message.success{background:#e8f7ef;color:#14764b}
+.message.error{background:#fff0f1;color:#b52f43}
+.message.info{background:#f0edff;color:#5545c5}
+.progress{height:7px;background:#ececf5;border-radius:10px;overflow:hidden;margin-top:12px;display:none}
+.progress div{height:100%;width:0;background:var(--purple);transition:width .2s}
+.help{background:#f3f0ff;border:1px solid #e2ddff;border-radius:10px;padding:14px;margin-top:16px;color:#594bb1;font-size:11px;line-height:1.6}
+.footer{text-align:center;color:#a0a3b3;font-size:11px;margin:25px}
+@media(max-width:1000px){.stats{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:700px){
+ .sidebar{display:none}main{padding:20px 13px}
+ .top{align-items:flex-start;flex-direction:column}
+ .controls{grid-template-columns:1fr}
+ .add-row{grid-template-columns:1fr}
+ .panel{padding:16px}
 }
 </style>
 </head>
-
 <body>
-
 <div class="app">
+<aside class="sidebar">
+  <div class="brand">
+    <div class="logo">✓</div>
+    <div><strong>CloudAttend</strong><small>ATTENDANCE MANAGEMENT</small></div>
+  </div>
+  <div class="nav-title">MAIN MENU</div>
+  <div class="nav active">▦ &nbsp; Dashboard</div>
+  <div class="nav">✓ &nbsp; Class Attendance</div>
+  <div class="nav">♙ &nbsp; Students</div>
+  <div class="nav">▤ &nbsp; Reports</div>
+  <div class="sidebar-note">
+    <strong>☁ AWS Connected</strong>
+    Attendance submissions are sent to your existing AWS backend.
+  </div>
+</aside>
 
-  <aside class="sidebar">
-    <div class="brand">
-      <div class="brand-icon">✓</div>
-      <div>
-        <div class="brand-name">CloudAttend</div>
-        <div class="brand-small">ATTENDANCE MANAGEMENT</div>
-      </div>
+<main>
+  <header class="top">
+    <div>
+      <h1>Professor Dashboard</h1>
+      <div class="subtitle">Manage your class attendance in one simple place.</div>
+    </div>
+    <div class="cloud">● AWS API CONFIGURED</div>
+  </header>
+
+  <section class="stats">
+    <div class="stat"><div class="stat-icon">▤</div><div class="stat-number" id="total">1</div><div class="stat-label">Students in this class</div></div>
+    <div class="stat"><div class="stat-icon">✓</div><div class="stat-number" id="present">1</div><div class="stat-label">Marked present</div></div>
+    <div class="stat"><div class="stat-icon">✕</div><div class="stat-number" id="absent">0</div><div class="stat-label">Marked absent</div></div>
+    <div class="stat"><div class="stat-icon">%</div><div class="stat-number" id="rate">100%</div><div class="stat-label">Class attendance rate</div></div>
+  </section>
+
+  <section class="panel">
+    <h2>Class Information</h2>
+    <p class="panel-desc">Choose the course and date for today's attendance.</p>
+    <div class="controls">
+      <div><label for="course">Course ID</label><input id="course" value="CLOUD101" placeholder="Example: CLOUD101"></div>
+      <div><label for="date">Attendance Date</label><input id="date" type="date"></div>
+    </div>
+  </section>
+
+  <section class="panel">
+    <h2>Manage Class Attendance</h2>
+    <p class="panel-desc">Add students, mark their attendance, and submit the class records.</p>
+
+    <div class="toolbar">
+      <button class="btn secondary" onclick="markAll('Present')">✓ Mark all present</button>
+      <button class="btn danger" onclick="markAll('Absent')">✕ Mark all absent</button>
+      <button class="btn outline" onclick="resetStatuses()">Reset statuses</button>
     </div>
 
-    <div class="nav-label">MAIN MENU</div>
-
-    <div class="nav-item active">▦ Dashboard</div>
-    <div class="nav-item">✓ Attendance</div>
-    <div class="nav-item">♙ Students</div>
-    <div class="nav-item">▤ Reports</div>
-
-    <div class="sidebar-bottom">
-      <strong>☁ AWS Connected</strong>
-      <span>Attendance requests are processed through your AWS backend.</span>
-    </div>
-  </aside>
-
-  <main class="main">
-
-    <header class="topbar">
-      <div>
-        <h1 class="page-title">Attendance Dashboard</h1>
-        <div class="page-subtitle">
-          Monitor student attendance and manage records
-        </div>
-      </div>
-
-      <div class="cloud-status">● AWS API CONFIGURED</div>
-    </header>
-
-    <!-- Summary cards -->
-
-    <section class="stats">
-
-      <div class="stat-card">
-        <div class="stat-top">
-          <div class="stat-icon">▤</div>
-        </div>
-        <div class="stat-number" id="totalCount">0</div>
-        <div class="stat-label">Records this session</div>
-      </div>
-
-      <div class="stat-card">
-        <div class="stat-top">
-          <div class="stat-icon">✓</div>
-        </div>
-        <div class="stat-number" id="presentCount">0</div>
-        <div class="stat-label">Present this session</div>
-      </div>
-
-      <div class="stat-card">
-        <div class="stat-top">
-          <div class="stat-icon">✕</div>
-        </div>
-        <div class="stat-number" id="absentCount">0</div>
-        <div class="stat-label">Absent this session</div>
-      </div>
-
-      <div class="stat-card">
-        <div class="stat-top">
-          <div class="stat-icon">%</div>
-        </div>
-        <div class="stat-number" id="attendanceRate">0%</div>
-        <div class="stat-label">Present rate this session</div>
-      </div>
-
-    </section>
-
-    <!-- Main content -->
-
-    <section class="content-grid">
-
-      <div class="card">
-
-        <h2 class="card-heading">Mark Attendance</h2>
-
-        <p class="card-description">
-          Submit attendance to your AWS cloud backend.
-        </p>
-
-        <div class="form-grid">
-
-          <div class="field">
-            <label for="student_id">Student ID</label>
-            <input id="student_id" value="STU001" placeholder="Enter student ID">
-          </div>
-
-          <div class="field">
-            <label for="student_name">Student Name</label>
-            <input id="student_name" value="Sadikur" placeholder="Enter student name">
-          </div>
-
-          <div class="field full">
-            <label for="course_id">Course ID</label>
-            <input id="course_id" value="cloud-computing" placeholder="Enter course ID">
-          </div>
-
-          <div class="field full">
-            <label for="attendance_date">Attendance Date</label>
-            <input id="attendance_date" type="date">
-          </div>
-
-          <div class="field full">
-            <label>Attendance Status</label>
-
-            <div class="status-options">
-              <button type="button"
-                id="presentBtn"
-                class="status-button present active"
-                onclick="setStatus('present')">
-                ✓ Present
-              </button>
-
-              <button type="button"
-                id="absentBtn"
-                class="status-button absent"
-                onclick="setStatus('absent')">
-                ✕ Absent
-              </button>
-            </div>
-          </div>
-
-        </div>
-
-        <button id="submitBtn"
-          class="submit-button"
-          onclick="markAttendance()">
-          MARK ATTENDANCE →
-        </button>
-
-        <div id="result" class="result" role="status"></div>
-
-      </div>
-
-      <!-- AWS architecture -->
-
-      <aside class="card">
-
-        <h2 class="card-heading">AWS Architecture</h2>
-
-        <p class="card-description">
-          How your attendance system works
-        </p>
-
-        <div class="architecture">
-
-          <div class="architecture-step">
-            <div class="architecture-icon">🖥️</div>
-            <div>
-              <strong>Web Dashboard</strong>
-              <span>GitHub Pages interface</span>
-            </div>
-          </div>
-
-          <div class="flow-arrow">↓</div>
-
-          <div class="architecture-step">
-            <div class="architecture-icon">🌐</div>
-            <div>
-              <strong>Amazon API Gateway</strong>
-              <span>Receives API requests</span>
-            </div>
-          </div>
-
-          <div class="flow-arrow">↓</div>
-
-          <div class="architecture-step">
-            <div class="architecture-icon">⚙️</div>
-            <div>
-              <strong>AWS Lambda</strong>
-              <span>Processes attendance</span>
-            </div>
-          </div>
-
-          <div class="flow-arrow">↓</div>
-
-          <div class="architecture-step">
-            <div class="architecture-icon">🗄️</div>
-            <div>
-              <strong>Amazon DynamoDB</strong>
-              <span>Stores attendance data</span>
-            </div>
-          </div>
-
-          <div class="flow-arrow">↓</div>
-
-          <div class="architecture-step">
-            <div class="architecture-icon">✉️</div>
-            <div>
-              <strong>Amazon SES</strong>
-              <span>Sends email notifications</span>
-            </div>
-          </div>
-
-        </div>
-
-        <div class="aws-note">
-          <strong>Cloud workflow</strong><br>
-          When attendance is submitted, the dashboard sends a request to
-          API Gateway. Lambda processes it and handles the database
-          and email workflow configured in AWS.
-        </div>
-
-      </aside>
-
-    </section>
-
-    <!-- Recent activity -->
-
-    <section class="card activity-card">
-
-      <div class="activity-header">
-        <h2 class="card-heading">Recent Activity</h2>
-        <span>Submissions in this browser session</span>
-      </div>
-
-      <div style="overflow-x:auto">
-        <table class="activity-table">
-          <thead>
-            <tr>
-              <th>Student ID</th>
-              <th>Student Name</th>
-              <th>Course</th>
-              <th>Date</th>
-              <th>Status</th>
-            </tr>
-          </thead>
-
-          <tbody id="activityBody">
-            <tr>
-              <td colspan="5" class="empty">
-                No attendance submitted in this session yet.
-              </td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-
-    </section>
-
-    <div class="footer">
-      CloudAttend · AWS-Based Attendance Management Demonstration
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>STUDENT</th><th>ATTENDANCE STATUS</th><th>ACTION</th></tr></thead>
+        <tbody id="studentRows"></tbody>
+      </table>
     </div>
 
-  </main>
+    <div class="add-row">
+      <input id="newId" placeholder="Student ID (e.g. STU002)">
+      <input id="newName" placeholder="Student name">
+      <button class="btn secondary" onclick="addStudent()">+ Add student</button>
+    </div>
+
+    <div class="summary-line">
+      <span id="countSummary">1 student</span>
+      <span id="pendingSummary">0 pending</span>
+    </div>
+
+    <button id="saveBtn" class="btn primary" style="width:100%;margin-top:20px" onclick="saveAttendance()">
+      SAVE CLASS ATTENDANCE →
+    </button>
+
+    <div class="progress" id="progress"><div id="progressBar"></div></div>
+    <div class="message" id="message" role="status"></div>
+
+    <div class="help">
+      <strong>How it works:</strong> The professor marks each student and submits the class.
+      Each student's attendance is sent individually through the existing API Gateway endpoint.
+    </div>
+  </section>
+
+  <section class="panel">
+    <h2>AWS Cloud Architecture</h2>
+    <p class="panel-desc">Your existing attendance processing workflow.</p>
+    <div class="toolbar">
+      <span class="btn outline">🖥️ GitHub Pages Dashboard</span>
+      <span class="btn outline">→ API Gateway</span>
+      <span class="btn outline">→ AWS Lambda</span>
+      <span class="btn outline">→ DynamoDB</span>
+      <span class="btn outline">→ Amazon SES</span>
+    </div>
+    <div class="panel-desc">
+      API Gateway receives requests, Lambda processes attendance, DynamoDB stores records,
+      and SES handles email notifications when configured by your backend.
+    </div>
+  </section>
+
+  <div class="footer">CloudAttend · Professor Attendance Management</div>
+</main>
 </div>
 
 <script>
-/* Your existing AWS API endpoint */
+/* Existing AWS API endpoint — unchanged */
 const API_URL =
-  "https://e6m4n5kip3.execute-api.ap-southeast-2.amazonaws.com/prod/attendance";
+ "https://e6m4n5kip3.execute-api.ap-southeast-2.amazonaws.com/prod/attendance";
 
-let attendanceStatus = "present";
+let students = [
+ { id:"STU001", name:"Sadikur", status:"Present" }
+];
 
-let sessionRecords = [];
+const dateField = document.getElementById("date");
+function localDate(){
+ const d = new Date();
+ return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`;
+}
+dateField.value = localDate();
 
-const dateInput = document.getElementById("attendance_date");
-
-/* Use the browser's local date */
-function getLocalDate() {
-  const now = new Date();
-  const year = now.getFullYear();
-  const month = String(now.getMonth() + 1).padStart(2, "0");
-  const day = String(now.getDate()).padStart(2, "0");
-
-  return `${year}-${month}-${day}`;
+function escapeHTML(value){
+ return String(value).replace(/[&<>"']/g, c => ({
+  "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"
+ }[c]));
 }
 
-dateInput.value = getLocalDate();
+function render(){
+ const body = document.getElementById("studentRows");
+ body.innerHTML = "";
 
-/* Select attendance status */
-function setStatus(value) {
-  attendanceStatus = value;
-
-  document.getElementById("presentBtn")
-    .classList.toggle("active", value === "present");
-
-  document.getElementById("absentBtn")
-    .classList.toggle("active", value === "absent");
-}
-
-/* Show success or error message */
-function showMessage(type, message) {
-  const result = document.getElementById("result");
-
-  result.className = "result " + type;
-  result.textContent = message;
-}
-
-/* Update summary cards */
-function updateStatistics() {
-  const total = sessionRecords.length;
-
-  const present = sessionRecords.filter(
-    record => record.status === "present"
-  ).length;
-
-  const absent = sessionRecords.filter(
-    record => record.status === "absent"
-  ).length;
-
-  const rate = total === 0
-    ? 0
-    : Math.round((present / total) * 100);
-
-  document.getElementById("totalCount").textContent = total;
-  document.getElementById("presentCount").textContent = present;
-  document.getElementById("absentCount").textContent = absent;
-  document.getElementById("attendanceRate").textContent = rate + "%";
-}
-
-/* Update recent activity */
-function updateActivity(record) {
-  const body = document.getElementById("activityBody");
-
-  if (sessionRecords.length === 1) {
-    body.innerHTML = "";
-  }
-
+ students.forEach((student,index)=>{
   const row = document.createElement("tr");
-
-  const values = [
-    record.student_id,
-    record.student_name,
-    record.course_id,
-    record.attendance_date
-  ];
-
-  values.forEach(value => {
-    const cell = document.createElement("td");
-    cell.textContent = value;
-    row.appendChild(cell);
-  });
-
-  const statusCell = document.createElement("td");
-  const tag = document.createElement("span");
-
-  tag.className = "status-tag " + record.status;
-  tag.textContent = record.status.toUpperCase();
-
-  statusCell.appendChild(tag);
-  row.appendChild(statusCell);
-
-  body.prepend(row);
+  row.innerHTML = `
+   <td><div class="student-name">${escapeHTML(student.name)}</div>
+   <div class="student-id">${escapeHTML(student.id)}</div></td>
+   <td>
+    <select class="status-select" aria-label="Attendance status for ${escapeHTML(student.id)}"
+     onchange="changeStatus(${index},this.value)">
+     <option value="Present" ${student.status==="Present"?"selected":""}>✓ Present</option>
+     <option value="Absent" ${student.status==="Absent"?"selected":""}>✕ Absent</option>
+     <option value="Pending" ${student.status==="Pending"?"selected":""}>— Not marked</option>
+    </select>
+   </td>
+   <td><button class="remove" onclick="removeStudent(${index})">Remove</button></td>`;
+  body.appendChild(row);
+ });
+ updateStats();
 }
 
-/* Submit attendance to AWS */
-async function markAttendance() {
-  const button = document.getElementById("submitBtn");
-
-  const studentId =
-    document.getElementById("student_id").value.trim();
-
-  const studentName =
-    document.getElementById("student_name").value.trim();
-
-  const courseId =
-    document.getElementById("course_id").value.trim();
-
-  const attendanceDate =
-    document.getElementById("attendance_date").value;
-
-  if (!studentId || !courseId || !attendanceDate) {
-    showMessage(
-      "error",
-      "Please enter Student ID, Course ID and Attendance Date."
-    );
-    return;
-  }
-
-  button.disabled = true;
-  button.textContent = "SENDING REQUEST TO AWS...";
-
-  document.getElementById("result").className = "result";
-
-  try {
-    const response = await fetch(API_URL, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
-
-      /* Keep the same payload expected by your existing backend */
-      body: JSON.stringify({
-        student_id: studentId,
-        attendance_date: attendanceDate,
-        course_id: courseId,
-        status: attendanceStatus
-      })
-    });
-
-    const responseText = await response.text();
-
-    let data = {};
-
-    try {
-      data = responseText ? JSON.parse(responseText) : {};
-    } catch {
-      data = { message: responseText };
-    }
-
-    if (!response.ok) {
-      throw new Error(
-        data.message || data.error || `AWS returned HTTP ${response.status}`
-      );
-    }
-
-    const record = {
-      student_id: studentId,
-      student_name: studentName || "—",
-      course_id: courseId,
-      attendance_date: attendanceDate,
-      status: attendanceStatus
-    };
-
-    sessionRecords.unshift(record);
-
-    updateStatistics();
-    updateActivity(record);
-
-    let message =
-      `Attendance recorded successfully! Student: ${studentId}. ` +
-      `Course: ${courseId}. Status: ${attendanceStatus.toUpperCase()}.`;
-
-    if (attendanceStatus === "absent") {
-      message +=
-        " The AWS backend received the absent record. " +
-        "Email delivery depends on the SES workflow configured in Lambda.";
-    }
-
-    showMessage("success", message);
-
-  } catch (error) {
-    showMessage(
-      "error",
-      "Could not record attendance. " + error.message
-    );
-
-  } finally {
-    button.disabled = false;
-    button.textContent = "MARK ATTENDANCE →";
-  }
+function updateStats(){
+ const total=students.length;
+ const present=students.filter(s=>s.status==="Present").length;
+ const absent=students.filter(s=>s.status==="Absent").length;
+ const pending=total-present-absent;
+ document.getElementById("total").textContent=total;
+ document.getElementById("present").textContent=present;
+ document.getElementById("absent").textContent=absent;
+ document.getElementById("rate").textContent=
+  total ? Math.round(present/total*100)+"%" : "0%";
+ document.getElementById("countSummary").textContent=total+" student"+(total===1?"":"s");
+ document.getElementById("pendingSummary").textContent=pending+" pending";
 }
+
+function changeStatus(index,value){
+ students[index].status=value;
+ updateStats();
+}
+function markAll(status){
+ students.forEach(s=>s.status=status);
+ render();
+}
+function resetStatuses(){
+ students.forEach(s=>s.status="Pending");
+ render();
+}
+function addStudent(){
+ const id=document.getElementById("newId").value.trim();
+ const name=document.getElementById("newName").value.trim();
+ if(!id||!name){showMessage("error","Enter both a student ID and a student name.");return;}
+ if(students.some(s=>s.id.toLowerCase()===id.toLowerCase())){
+  showMessage("error","That student ID is already in the class list.");return;
+ }
+ students.push({id,name,status:"Pending"});
+ document.getElementById("newId").value="";
+ document.getElementById("newName").value="";
+ render();
+ showMessage("info","Student added to this class list.");
+}
+function removeStudent(index){
+ students.splice(index,1);
+ render();
+}
+function showMessage(type,text){
+ const box=document.getElementById("message");
+ box.className="message show "+type;
+ box.textContent=text;
+}
+function setProgress(done,total){
+ const progress=document.getElementById("progress");
+ progress.style.display="block";
+ document.getElementById("progressBar").style.width=
+  (total ? done/total*100 : 0)+"%";
+}
+
+async function saveAttendance(){
+ const course=document.getElementById("course").value.trim();
+ const date=document.getElementById("date").value;
+ const button=document.getElementById("saveBtn");
+
+ if(!course||!date){showMessage("error","Please enter a course ID and attendance date.");return;}
+ if(!students.length){showMessage("error","Add at least one student first.");return;}
+
+ const pending=students.filter(s=>s.status==="Pending");
+ if(pending.length){
+  showMessage("error",`Please mark attendance for all students. ${pending.length} still need a status.`);
+  return;
+ }
+
+ button.disabled=true;
+ button.textContent="SUBMITTING CLASS ATTENDANCE...";
+ document.getElementById("progress").style.display="block";
+ setProgress(0,students.length);
+
+ let succeeded=0;
+ const failures=[];
+
+ /* The existing API accepts one attendance record per POST.
+    Send sequential requests to avoid overwhelming the endpoint. */
+ for(let i=0;i<students.length;i++){
+  const student=students[i];
+  try{
+   const response=await fetch(API_URL,{
+    method:"POST",
+    headers:{"Content-Type":"application/json"},
+    body:JSON.stringify({
+     student_id:student.id,
+     attendance_date:date,
+     course_id:course,
+     status:student.status.toLowerCase()
+    })
+   });
+
+   const text=await response.text();
+   let data={};
+   try{data=text?JSON.parse(text):{};}catch{data={message:text};}
+
+   if(!response.ok){
+    throw new Error(data.message||data.error||"HTTP "+response.status);
+   }
+   succeeded++;
+  }catch(error){
+   failures.push(student.id+": "+error.message);
+  }
+  setProgress(i+1,students.length);
+ }
+
+ button.disabled=false;
+ button.textContent="SAVE CLASS ATTENDANCE →";
+
+ if(failures.length===0){
+  showMessage("success",
+   `Successfully submitted ${succeeded} attendance records to AWS for ${course} on ${date}.`);
+ }else{
+  showMessage("error",
+   `${succeeded} of ${students.length} records succeeded. ${failures.length} failed. Failed students: ${failures.join(" | ")}. Check before retrying to avoid duplicate records.`);
+ }
+}
+
+render();
 </script>
-
 </body>
 </html>
