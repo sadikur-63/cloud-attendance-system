@@ -3,179 +3,997 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Cloud Attendance System</title>
+<title>CloudAttend | Attendance Management</title>
+
 <style>
-*{box-sizing:border-box}
-body{margin:0;font-family:Inter,Segoe UI,Arial,sans-serif;background:#f4f7fb;color:#172033}
-.container{max-width:1180px;margin:auto;padding:28px}
-.header{display:flex;justify-content:space-between;align-items:center;margin-bottom:24px}
-.brand{display:flex;align-items:center;gap:14px}
-.logo{width:48px;height:48px;border-radius:14px;background:#2563eb;color:white;display:grid;place-items:center;font-size:24px;font-weight:800}
-h1{margin:0;font-size:25px}.sub{margin:5px 0 0;color:#667085;font-size:14px}
-.badge{background:#e8f7ee;color:#16803c;border:1px solid #bce8ca;padding:9px 13px;border-radius:999px;font-size:13px;font-weight:700}
-.grid{display:grid;grid-template-columns:1.45fr .8fr;gap:20px}
-.card{background:white;border:1px solid #e5eaf2;border-radius:18px;box-shadow:0 8px 25px rgba(20,40,80,.06);padding:24px}
-.card h2{margin:0 0 5px;font-size:19px}.muted{color:#667085;font-size:13px;margin-bottom:22px}
-.formgrid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
-.field.full{grid-column:1/-1}
-label{display:block;font-size:13px;font-weight:700;margin-bottom:8px}
-input{width:100%;padding:13px 14px;border:1px solid #d8dfeb;border-radius:10px;font-size:15px;outline:none}
-input:focus{border-color:#2563eb;box-shadow:0 0 0 3px #2563eb18}
-.status{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-.status button{padding:14px;border:1px solid #d8dfeb;background:#fff;border-radius:10px;font-weight:700;cursor:pointer}
-.status button.active.present{border-color:#16a34a;background:#ecfdf3;color:#15803d}
-.status button.active.absent{border-color:#2563eb;background:#eff6ff;color:#1d4ed8}
-.submit{width:100%;margin-top:20px;padding:15px;border:0;border-radius:11px;background:#2563eb;color:#fff;font-size:15px;font-weight:800;cursor:pointer}
-.submit:hover{background:#1d4ed8}.submit:disabled{opacity:.6;cursor:wait}
-.result{display:none;margin-top:16px;padding:14px;border-radius:11px;font-size:14px;line-height:1.55}
-.result.success{display:block;background:#ecfdf3;color:#166534;border:1px solid #bbf7d0}
-.result.error{display:block;background:#fef2f2;color:#991b1b;border:1px solid #fecaca}
-.stats{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:20px}
-.stat{padding:16px;border-radius:13px;background:#f7f9fc;border:1px solid #e8edf5}
-.stat strong{display:block;font-size:22px}.stat span{font-size:12px;color:#667085}
-.flow{margin-top:20px}
-.flow h3{font-size:15px;margin:0 0 12px}
-.step{display:flex;align-items:center;gap:9px;margin:9px 0;font-size:13px}
-.icon{width:32px;height:32px;border-radius:9px;background:#eef4ff;display:grid;place-items:center;font-weight:800;color:#2563eb}
-.arrow{color:#98a2b3;margin-left:5px}
-.note{margin-top:20px;padding:14px;background:#fff8e7;border:1px solid #f4df9c;border-radius:12px;font-size:12px;color:#795b00;line-height:1.5}
-.footer{text-align:center;color:#98a2b3;font-size:12px;margin-top:22px}
-@media(max-width:850px){.grid{grid-template-columns:1fr}.formgrid{grid-template-columns:1fr}.field.full{grid-column:auto}.header{align-items:flex-start;gap:12px}.badge{display:none}}
+:root {
+  --primary: #6d5dfc;
+  --primary-dark: #5746e8;
+  --background: #f6f7fc;
+  --surface: #ffffff;
+  --text: #20243a;
+  --muted: #858ba3;
+  --border: #eceef5;
+  --green: #16a36a;
+  --red: #e45468;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: Inter, "Segoe UI", Arial, sans-serif;
+  background: var(--background);
+  color: var(--text);
+}
+
+.app {
+  min-height: 100vh;
+  display: flex;
+}
+
+/* Sidebar */
+
+.sidebar {
+  width: 245px;
+  background: #211d45;
+  color: white;
+  padding: 28px 20px;
+  flex-shrink: 0;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 48px;
+}
+
+.brand-icon {
+  width: 42px;
+  height: 42px;
+  border-radius: 13px;
+  display: grid;
+  place-items: center;
+  background: linear-gradient(135deg, #8c7cff, #5d4ce7);
+  font-size: 23px;
+  font-weight: 800;
+}
+
+.brand-name {
+  font-size: 19px;
+  font-weight: 800;
+}
+
+.brand-small {
+  color: #aaa5d0;
+  font-size: 11px;
+  margin-top: 3px;
+}
+
+.nav-label {
+  color: #9994bd;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 1.2px;
+  margin: 0 0 13px 10px;
+}
+
+.nav-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 13px 14px;
+  margin-bottom: 7px;
+  color: #c6c3dc;
+  border-radius: 10px;
+  font-size: 14px;
+}
+
+.nav-item.active {
+  background: #5145a8;
+  color: white;
+  font-weight: 700;
+}
+
+.sidebar-bottom {
+  margin-top: 55px;
+  padding: 16px;
+  background: #302b59;
+  border-radius: 13px;
+}
+
+.sidebar-bottom strong {
+  display: block;
+  font-size: 13px;
+  margin-bottom: 7px;
+}
+
+.sidebar-bottom span {
+  color: #bcb7dd;
+  font-size: 11px;
+  line-height: 1.5;
+}
+
+/* Main content */
+
+.main {
+  flex: 1;
+  min-width: 0;
+  padding: 30px 38px;
+}
+
+.topbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 15px;
+  margin-bottom: 30px;
+}
+
+.page-title {
+  font-size: 25px;
+  font-weight: 800;
+  margin: 0;
+}
+
+.page-subtitle {
+  color: var(--muted);
+  font-size: 13px;
+  margin-top: 7px;
+}
+
+.cloud-status {
+  background: #e9f8f0;
+  color: #148653;
+  border: 1px solid #c9eedb;
+  padding: 10px 14px;
+  border-radius: 30px;
+  font-size: 12px;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+/* Summary cards */
+
+.stats {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 17px;
+  margin-bottom: 24px;
+}
+
+.stat-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 15px;
+  padding: 20px;
+  box-shadow: 0 5px 20px rgba(36, 35, 75, 0.035);
+}
+
+.stat-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 17px;
+}
+
+.stat-icon {
+  width: 38px;
+  height: 38px;
+  border-radius: 11px;
+  display: grid;
+  place-items: center;
+  font-size: 18px;
+  background: #f0edff;
+}
+
+.stat-card:nth-child(2) .stat-icon {
+  background: #e8f8f0;
+}
+
+.stat-card:nth-child(3) .stat-icon {
+  background: #fff0f1;
+}
+
+.stat-card:nth-child(4) .stat-icon {
+  background: #fff6e8;
+}
+
+.stat-number {
+  font-size: 28px;
+  font-weight: 800;
+}
+
+.stat-label {
+  font-size: 12px;
+  color: var(--muted);
+  margin-top: 5px;
+}
+
+/* Content grid */
+
+.content-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.5fr) minmax(280px, 0.8fr);
+  gap: 20px;
+  align-items: start;
+}
+
+.card {
+  background: white;
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 24px;
+  box-shadow: 0 5px 20px rgba(36, 35, 75, 0.035);
+}
+
+.card-heading {
+  font-size: 17px;
+  font-weight: 800;
+  margin: 0;
+}
+
+.card-description {
+  color: var(--muted);
+  font-size: 12px;
+  margin: 7px 0 23px;
+}
+
+/* Form */
+
+.form-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 17px;
+}
+
+.field.full {
+  grid-column: 1 / -1;
+}
+
+label {
+  display: block;
+  font-size: 12px;
+  font-weight: 700;
+  margin-bottom: 8px;
+}
+
+input {
+  width: 100%;
+  padding: 13px 14px;
+  border: 1px solid #e1e3ed;
+  border-radius: 10px;
+  outline: none;
+  font-size: 14px;
+  background: #fff;
+  color: var(--text);
+}
+
+input:focus {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(109, 93, 252, 0.1);
+}
+
+.status-options {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.status-button {
+  padding: 13px;
+  background: white;
+  border: 1px solid #e1e3ed;
+  border-radius: 10px;
+  cursor: pointer;
+  font-weight: 700;
+  font-size: 13px;
+}
+
+.status-button.present.active {
+  background: #eaf8f0;
+  color: #138452;
+  border-color: #63c795;
+}
+
+.status-button.absent.active {
+  background: #fff0f1;
+  color: #d6475c;
+  border-color: #ef9aa5;
+}
+
+.submit-button {
+  width: 100%;
+  padding: 15px;
+  margin-top: 22px;
+  border: none;
+  border-radius: 10px;
+  background: var(--primary);
+  color: white;
+  font-size: 14px;
+  font-weight: 800;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.submit-button:hover {
+  background: var(--primary-dark);
+}
+
+.submit-button:disabled {
+  opacity: 0.6;
+  cursor: wait;
+}
+
+.result {
+  display: none;
+  margin-top: 16px;
+  padding: 14px;
+  border-radius: 10px;
+  font-size: 13px;
+  line-height: 1.6;
+  overflow-wrap: anywhere;
+}
+
+.result.success {
+  display: block;
+  background: #eaf8f0;
+  color: #13774a;
+  border: 1px solid #c6ead6;
+}
+
+.result.error {
+  display: block;
+  background: #fff0f1;
+  color: #b52d43;
+  border: 1px solid #f4cbd1;
+}
+
+/* AWS architecture */
+
+.architecture {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.architecture-step {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px;
+  background: #f8f8fd;
+  border: 1px solid #eeeefa;
+  border-radius: 11px;
+}
+
+.architecture-icon {
+  width: 37px;
+  height: 37px;
+  border-radius: 10px;
+  display: grid;
+  place-items: center;
+  background: #efedff;
+  font-size: 17px;
+}
+
+.architecture-step strong {
+  display: block;
+  font-size: 12px;
+}
+
+.architecture-step span {
+  display: block;
+  color: var(--muted);
+  font-size: 11px;
+  margin-top: 4px;
+}
+
+.flow-arrow {
+  text-align: center;
+  color: #aaa4d9;
+  font-size: 15px;
+  line-height: 5px;
+}
+
+.aws-note {
+  background: #f2efff;
+  border: 1px solid #e0dbff;
+  padding: 14px;
+  border-radius: 11px;
+  margin-top: 18px;
+  font-size: 12px;
+  color: #5545b1;
+  line-height: 1.6;
+}
+
+/* Activity */
+
+.activity-card {
+  margin-top: 21px;
+}
+
+.activity-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 17px;
+}
+
+.activity-header span {
+  color: var(--muted);
+  font-size: 11px;
+}
+
+.activity-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 12px;
+}
+
+.activity-table th {
+  color: var(--muted);
+  text-align: left;
+  padding: 12px 9px;
+  border-bottom: 1px solid var(--border);
+  font-weight: 700;
+}
+
+.activity-table td {
+  padding: 13px 9px;
+  border-bottom: 1px solid #f0f1f6;
+}
+
+.status-tag {
+  display: inline-block;
+  padding: 5px 9px;
+  border-radius: 20px;
+  font-size: 10px;
+  font-weight: 800;
+}
+
+.status-tag.present {
+  background: #e8f8ef;
+  color: #168452;
+}
+
+.status-tag.absent {
+  background: #fff0f1;
+  color: #d6475c;
+}
+
+.empty {
+  text-align: center;
+  color: var(--muted);
+  padding: 22px !important;
+}
+
+.footer {
+  text-align: center;
+  color: #a0a4b5;
+  font-size: 11px;
+  margin: 25px 0 5px;
+}
+
+/* Responsive */
+
+@media(max-width: 1050px) {
+  .stats {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .content-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media(max-width: 700px) {
+  .sidebar {
+    display: none;
+  }
+
+  .main {
+    padding: 22px 15px;
+  }
+
+  .topbar {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .form-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .field.full {
+    grid-column: auto;
+  }
+
+  .stats {
+    gap: 10px;
+  }
+
+  .stat-card {
+    padding: 14px;
+  }
+
+  .stat-number {
+    font-size: 23px;
+  }
+
+  .card {
+    padding: 18px;
+  }
+
+  .activity-table {
+    font-size: 10px;
+  }
+
+  .activity-table th,
+  .activity-table td {
+    padding: 10px 5px;
+  }
+}
 </style>
 </head>
+
 <body>
-<div class="container">
-  <header class="header">
+
+<div class="app">
+
+  <aside class="sidebar">
     <div class="brand">
-      <div class="logo">✓</div>
+      <div class="brand-icon">✓</div>
       <div>
-        <h1>Cloud Attendance System</h1>
-        <p class="sub">Cloud-based student attendance & automatic email alerts</p>
+        <div class="brand-name">CloudAttend</div>
+        <div class="brand-small">ATTENDANCE MANAGEMENT</div>
       </div>
     </div>
-    <div class="badge">● Cloud Connected</div>
-  </header>
 
-  <main class="grid">
-    <section class="card">
-      <h2>Mark Attendance</h2>
-      <div class="muted">Record a student's attendance through the cloud backend.</div>
+    <div class="nav-label">MAIN MENU</div>
 
-      <div class="formgrid">
-        <div class="field">
-          <label>Student ID</label>
-          <input id="student_id" value="STU001">
-        </div>
-        <div class="field">
-          <label>Student Name</label>
-          <input id="student_name" value="Sadikur">
-        </div>
-        <div class="field full">
-          <label>Course</label>
-          <input id="course_id" value="cloud-computing">
-        </div>
-        <div class="field full">
-          <label>Attendance Date</label>
-          <input id="attendance_date" type="date">
-        </div>
-        <div class="field full">
-          <label>Attendance Status</label>
-          <div class="status">
-            <button id="presentBtn" class="present active" onclick="setStatus('present')">✓ Present</button>
-            <button id="absentBtn" class="absent" onclick="setStatus('absent')">✕ Absent</button>
-          </div>
+    <div class="nav-item active">▦ Dashboard</div>
+    <div class="nav-item">✓ Attendance</div>
+    <div class="nav-item">♙ Students</div>
+    <div class="nav-item">▤ Reports</div>
+
+    <div class="sidebar-bottom">
+      <strong>☁ AWS Connected</strong>
+      <span>Attendance requests are processed through your AWS backend.</span>
+    </div>
+  </aside>
+
+  <main class="main">
+
+    <header class="topbar">
+      <div>
+        <h1 class="page-title">Attendance Dashboard</h1>
+        <div class="page-subtitle">
+          Monitor student attendance and manage records
         </div>
       </div>
 
-      <button id="submitBtn" class="submit" onclick="markAttendance()">MARK ATTENDANCE</button>
-      <div id="result" class="result"></div>
+      <div class="cloud-status">● AWS API CONFIGURED</div>
+    </header>
+
+    <!-- Summary cards -->
+
+    <section class="stats">
+
+      <div class="stat-card">
+        <div class="stat-top">
+          <div class="stat-icon">▤</div>
+        </div>
+        <div class="stat-number" id="totalCount">0</div>
+        <div class="stat-label">Records this session</div>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-top">
+          <div class="stat-icon">✓</div>
+        </div>
+        <div class="stat-number" id="presentCount">0</div>
+        <div class="stat-label">Present this session</div>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-top">
+          <div class="stat-icon">✕</div>
+        </div>
+        <div class="stat-number" id="absentCount">0</div>
+        <div class="stat-label">Absent this session</div>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-top">
+          <div class="stat-icon">%</div>
+        </div>
+        <div class="stat-number" id="attendanceRate">0%</div>
+        <div class="stat-label">Present rate this session</div>
+      </div>
+
     </section>
 
-    <aside class="card">
-      <h2>System Overview</h2>
-      <div class="muted">Live architecture used by this demo.</div>
+    <!-- Main content -->
 
-      <div class="stats">
-        <div class="stat"><strong id="totalCount">0</strong><span>Records this session</span></div>
-        <div class="stat"><strong id="lastStatus">—</strong><span>Last status</span></div>
+    <section class="content-grid">
+
+      <div class="card">
+
+        <h2 class="card-heading">Mark Attendance</h2>
+
+        <p class="card-description">
+          Submit attendance to your AWS cloud backend.
+        </p>
+
+        <div class="form-grid">
+
+          <div class="field">
+            <label for="student_id">Student ID</label>
+            <input id="student_id" value="STU001" placeholder="Enter student ID">
+          </div>
+
+          <div class="field">
+            <label for="student_name">Student Name</label>
+            <input id="student_name" value="Sadikur" placeholder="Enter student name">
+          </div>
+
+          <div class="field full">
+            <label for="course_id">Course ID</label>
+            <input id="course_id" value="cloud-computing" placeholder="Enter course ID">
+          </div>
+
+          <div class="field full">
+            <label for="attendance_date">Attendance Date</label>
+            <input id="attendance_date" type="date">
+          </div>
+
+          <div class="field full">
+            <label>Attendance Status</label>
+
+            <div class="status-options">
+              <button type="button"
+                id="presentBtn"
+                class="status-button present active"
+                onclick="setStatus('present')">
+                ✓ Present
+              </button>
+
+              <button type="button"
+                id="absentBtn"
+                class="status-button absent"
+                onclick="setStatus('absent')">
+                ✕ Absent
+              </button>
+            </div>
+          </div>
+
+        </div>
+
+        <button id="submitBtn"
+          class="submit-button"
+          onclick="markAttendance()">
+          MARK ATTENDANCE →
+        </button>
+
+        <div id="result" class="result" role="status"></div>
+
       </div>
 
-      <div class="flow">
-        <h3>Cloud Data Flow</h3>
-        <div class="step"><div class="icon">1</div><b>Dashboard</b><span class="arrow">→</span> Web UI</div>
-        <div class="step"><div class="icon">2</div><b>API Gateway</b><span class="arrow">→</span> API request</div>
-        <div class="step"><div class="icon">3</div><b>Lambda</b><span class="arrow">→</span> Backend logic</div>
-        <div class="step"><div class="icon">4</div><b>DynamoDB</b><span class="arrow">→</span> Attendance data</div>
-        <div class="step"><div class="icon">5</div><b>SES</b><span class="arrow">→</span> Email alert</div>
+      <!-- AWS architecture -->
+
+      <aside class="card">
+
+        <h2 class="card-heading">AWS Architecture</h2>
+
+        <p class="card-description">
+          How your attendance system works
+        </p>
+
+        <div class="architecture">
+
+          <div class="architecture-step">
+            <div class="architecture-icon">🖥️</div>
+            <div>
+              <strong>Web Dashboard</strong>
+              <span>GitHub Pages interface</span>
+            </div>
+          </div>
+
+          <div class="flow-arrow">↓</div>
+
+          <div class="architecture-step">
+            <div class="architecture-icon">🌐</div>
+            <div>
+              <strong>Amazon API Gateway</strong>
+              <span>Receives API requests</span>
+            </div>
+          </div>
+
+          <div class="flow-arrow">↓</div>
+
+          <div class="architecture-step">
+            <div class="architecture-icon">⚙️</div>
+            <div>
+              <strong>AWS Lambda</strong>
+              <span>Processes attendance</span>
+            </div>
+          </div>
+
+          <div class="flow-arrow">↓</div>
+
+          <div class="architecture-step">
+            <div class="architecture-icon">🗄️</div>
+            <div>
+              <strong>Amazon DynamoDB</strong>
+              <span>Stores attendance data</span>
+            </div>
+          </div>
+
+          <div class="flow-arrow">↓</div>
+
+          <div class="architecture-step">
+            <div class="architecture-icon">✉️</div>
+            <div>
+              <strong>Amazon SES</strong>
+              <span>Sends email notifications</span>
+            </div>
+          </div>
+
+        </div>
+
+        <div class="aws-note">
+          <strong>Cloud workflow</strong><br>
+          When attendance is submitted, the dashboard sends a request to
+          API Gateway. Lambda processes it and handles the database
+          and email workflow configured in AWS.
+        </div>
+
+      </aside>
+
+    </section>
+
+    <!-- Recent activity -->
+
+    <section class="card activity-card">
+
+      <div class="activity-header">
+        <h2 class="card-heading">Recent Activity</h2>
+        <span>Submissions in this browser session</span>
       </div>
 
-      <div class="note">
-        <b>Automatic alert:</b> When attendance is marked <b>Absent</b>, the backend sends an attendance notification by Amazon SES.
+      <div style="overflow-x:auto">
+        <table class="activity-table">
+          <thead>
+            <tr>
+              <th>Student ID</th>
+              <th>Student Name</th>
+              <th>Course</th>
+              <th>Date</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+
+          <tbody id="activityBody">
+            <tr>
+              <td colspan="5" class="empty">
+                No attendance submitted in this session yet.
+              </td>
+            </tr>
+          </tbody>
+        </table>
       </div>
-    </aside>
+
+    </section>
+
+    <div class="footer">
+      CloudAttend · AWS-Based Attendance Management Demonstration
+    </div>
+
   </main>
-
-  <div class="footer">Cloud Computing Project • AWS-based Attendance Demo</div>
 </div>
 
 <script>
-const API_URL = "https://e6m4n5kip3.execute-api.ap-southeast-2.amazonaws.com/prod/attendance";
-let status = "present";
-let count = 0;
-document.getElementById("attendance_date").value = new Date().toISOString().slice(0,10);
+/* Your existing AWS API endpoint */
+const API_URL =
+  "https://e6m4n5kip3.execute-api.ap-southeast-2.amazonaws.com/prod/attendance";
 
-function setStatus(value){
-  status=value;
-  document.getElementById("presentBtn").classList.toggle("active", value==="present");
-  document.getElementById("absentBtn").classList.toggle("active", value==="absent");
+let attendanceStatus = "present";
+
+let sessionRecords = [];
+
+const dateInput = document.getElementById("attendance_date");
+
+/* Use the browser's local date */
+function getLocalDate() {
+  const now = new Date();
+  const year = now.getFullYear();
+  const month = String(now.getMonth() + 1).padStart(2, "0");
+  const day = String(now.getDate()).padStart(2, "0");
+
+  return `${year}-${month}-${day}`;
 }
 
-async function markAttendance(){
-  const btn=document.getElementById("submitBtn");
-  const result=document.getElementById("result");
-  const student_id=document.getElementById("student_id").value.trim();
-  const attendance_date=document.getElementById("attendance_date").value;
-  const course_id=document.getElementById("course_id").value.trim();
+dateInput.value = getLocalDate();
 
-  if(!student_id || !attendance_date || !course_id){
-    result.className="result error";
-    result.textContent="Please complete Student ID, Course and Date.";
+/* Select attendance status */
+function setStatus(value) {
+  attendanceStatus = value;
+
+  document.getElementById("presentBtn")
+    .classList.toggle("active", value === "present");
+
+  document.getElementById("absentBtn")
+    .classList.toggle("active", value === "absent");
+}
+
+/* Show success or error message */
+function showMessage(type, message) {
+  const result = document.getElementById("result");
+
+  result.className = "result " + type;
+  result.textContent = message;
+}
+
+/* Update summary cards */
+function updateStatistics() {
+  const total = sessionRecords.length;
+
+  const present = sessionRecords.filter(
+    record => record.status === "present"
+  ).length;
+
+  const absent = sessionRecords.filter(
+    record => record.status === "absent"
+  ).length;
+
+  const rate = total === 0
+    ? 0
+    : Math.round((present / total) * 100);
+
+  document.getElementById("totalCount").textContent = total;
+  document.getElementById("presentCount").textContent = present;
+  document.getElementById("absentCount").textContent = absent;
+  document.getElementById("attendanceRate").textContent = rate + "%";
+}
+
+/* Update recent activity */
+function updateActivity(record) {
+  const body = document.getElementById("activityBody");
+
+  if (sessionRecords.length === 1) {
+    body.innerHTML = "";
+  }
+
+  const row = document.createElement("tr");
+
+  const values = [
+    record.student_id,
+    record.student_name,
+    record.course_id,
+    record.attendance_date
+  ];
+
+  values.forEach(value => {
+    const cell = document.createElement("td");
+    cell.textContent = value;
+    row.appendChild(cell);
+  });
+
+  const statusCell = document.createElement("td");
+  const tag = document.createElement("span");
+
+  tag.className = "status-tag " + record.status;
+  tag.textContent = record.status.toUpperCase();
+
+  statusCell.appendChild(tag);
+  row.appendChild(statusCell);
+
+  body.prepend(row);
+}
+
+/* Submit attendance to AWS */
+async function markAttendance() {
+  const button = document.getElementById("submitBtn");
+
+  const studentId =
+    document.getElementById("student_id").value.trim();
+
+  const studentName =
+    document.getElementById("student_name").value.trim();
+
+  const courseId =
+    document.getElementById("course_id").value.trim();
+
+  const attendanceDate =
+    document.getElementById("attendance_date").value;
+
+  if (!studentId || !courseId || !attendanceDate) {
+    showMessage(
+      "error",
+      "Please enter Student ID, Course ID and Attendance Date."
+    );
     return;
   }
 
-  btn.disabled=true;
-  btn.textContent="SENDING TO AWS...";
-  result.className="result";
-  result.textContent="";
+  button.disabled = true;
+  button.textContent = "SENDING REQUEST TO AWS...";
 
-  try{
-    const response=await fetch(API_URL,{
-      method:"POST",
-      headers:{"Content-Type":"application/json"},
-      body:JSON.stringify({student_id,attendance_date,course_id,status})
+  document.getElementById("result").className = "result";
+
+  try {
+    const response = await fetch(API_URL, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+
+      /* Keep the same payload expected by your existing backend */
+      body: JSON.stringify({
+        student_id: studentId,
+        attendance_date: attendanceDate,
+        course_id: courseId,
+        status: attendanceStatus
+      })
     });
-    const data=await response.json();
-    if(!response.ok) throw new Error(data.message || "Request failed");
 
-    count++;
-    document.getElementById("totalCount").textContent=count;
-    document.getElementById("lastStatus").textContent=status.toUpperCase();
+    const responseText = await response.text();
 
-    result.className="result success";
-    result.innerHTML =
-      "✓ <b>Attendance recorded successfully!</b><br>"+
-      "Student: "+student_id+"<br>"+
-      "Course: "+course_id+"<br>"+
-      "Status: "+status.toUpperCase()+
-      (status==="absent" ? "<br>✓ Email alert sent through AWS SES." : "");
-  }catch(error){
-    result.className="result error";
-    result.innerHTML="✕ <b>Could not record attendance.</b><br>"+error.message;
-  }finally{
-    btn.disabled=false;
-    btn.textContent="MARK ATTENDANCE";
+    let data = {};
+
+    try {
+      data = responseText ? JSON.parse(responseText) : {};
+    } catch {
+      data = { message: responseText };
+    }
+
+    if (!response.ok) {
+      throw new Error(
+        data.message || data.error || `AWS returned HTTP ${response.status}`
+      );
+    }
+
+    const record = {
+      student_id: studentId,
+      student_name: studentName || "—",
+      course_id: courseId,
+      attendance_date: attendanceDate,
+      status: attendanceStatus
+    };
+
+    sessionRecords.unshift(record);
+
+    updateStatistics();
+    updateActivity(record);
+
+    let message =
+      `Attendance recorded successfully! Student: ${studentId}. ` +
+      `Course: ${courseId}. Status: ${attendanceStatus.toUpperCase()}.`;
+
+    if (attendanceStatus === "absent") {
+      message +=
+        " The AWS backend received the absent record. " +
+        "Email delivery depends on the SES workflow configured in Lambda.";
+    }
+
+    showMessage("success", message);
+
+  } catch (error) {
+    showMessage(
+      "error",
+      "Could not record attendance. " + error.message
+    );
+
+  } finally {
+    button.disabled = false;
+    button.textContent = "MARK ATTENDANCE →";
   }
 }
 </script>
+
 </body>
 </html>
